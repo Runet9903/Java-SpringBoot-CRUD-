@@ -1,0 +1,64 @@
+<div class="card m-2" id="comments-new">
+    <div class="card-body">
+        <!--comment-->
+        <form>
+            <!--Nickname-->
+            <div class="mb-3">
+                <label class="form-label">Nickname</label>
+                <input type="text" class="form-control" id="new-comment-nickname">
+            </div>
+
+            <!--comment body-->
+            <div class="mb-3">
+                <label class="form-label">Comment</label>
+                <textarea type="text" class="form-control" rows="3" id="new-comment-body"></textarea>
+            </div>
+
+            <!-- hidden input -->
+                {{#article}}
+                    <input type="hidden" id="new-comment-article-id" value="{{id}}">
+                {{/article}}
+
+            <!--submit button-->
+            <button type="button" class="btn btn-primary" id="comment-create-btn">Writing comments</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    {
+        const commentCreateBtn = document.querySelector("#comment-create-btn");
+
+        // comment click event
+        commentCreateBtn.addEventListener("click", function() {
+
+            // create new comment object
+            const comment = {
+                // new comment Nickname
+                nickname: document.querySelector("#new-comment-nickname").value,
+                // new comment Body
+                body: document.querySelector("#new-comment-body").value,
+                // Article Id
+                articleId: document.querySelector("#new-comment-article-id").value
+            };
+            console.log(comment);
+
+            // fetch()
+            const url = "/api/articles/" + comment.articleId + "/comments";
+            fetch(url, {
+                method: "POST",
+                headers: {                      // JSON
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(comment)   // comment object -> JSON
+            }).then(response => {
+                // HTTP Code -> message
+                const msg = (response.ok) ? "Comments registered" : "Failed to register comments";
+                alert(msg);
+                // reload
+                window.location.reload();
+            });
+        });
+    }
+</script>
+
